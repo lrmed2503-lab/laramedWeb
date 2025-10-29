@@ -16,7 +16,7 @@ export default function Categories(){
     <section className="bg-gray-50 my-22 px-5">
           <div className="container mx-auto py-5">
             <h2 className="text-4xl font-semibold text-blue-900 border-b-2 border-blue-300 pb-2">Productos y Soluciones</h2>
-            <section className="grid md:grid-cols-3 mt-4  text-shadow-lg">
+            <section className="grid md:grid-cols-2 lg:grid-cols-3 mt-4  text-shadow-lg">
             {
               categories && categories.length > 0 ?
               (
