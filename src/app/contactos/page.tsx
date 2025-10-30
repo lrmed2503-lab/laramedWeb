@@ -134,11 +134,7 @@ export default function Contactos(){
             <div className="container mx-auto px-5">
                 <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Nuestra Ubicación</h2>
                 
-                <div className="bg-gray-200 h-96 rounded-lg overflow-hidden">
-                    <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                        <p className="text-gray-600 text-lg">Mapa de ubicación de Laramed</p>
-                    </div>
-                </div>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3825.461079321604!2d-68.11856879999999!3d-16.5028042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f21458357b6c1%3A0x1800c607bdbb826a!2sEdificio%20Villalobos!5e0!3m2!1ses-419!2sbo!4v1761837810013!5m2!1ses-419!2sbo" width={930} height={600} className="mx-auto" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </section>
         

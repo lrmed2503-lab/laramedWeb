@@ -4,6 +4,7 @@ import { PortableText } from 'next-sanity';
 import ProductoCarousel from '@/components/Productos/ProductoCarousel';
 import {useState, useEffect} from 'react'
 import { getProduct } from '@/lib/getQueries';
+import { FaWhatsapp } from 'react-icons/fa';
 
 function WhatsAppButton({ name }: { name: string }) {
   const generarEnlaceWhatsApp = () => {
@@ -17,9 +18,9 @@ function WhatsAppButton({ name }: { name: string }) {
       href={generarEnlaceWhatsApp()}
       target="_blank"
       rel="noopener noreferrer"
-      className="bg-green-600 p-4 rounded-2xl text-white text-2xl hover:scale-105 duration-100 font-semibold cursor-pointer text-center transition-transform block"
+      className="bg-green-600 px-4 rounded-2xl text-white text-2xl hover:scale-105 duration-100 font-semibold cursor-pointer text-center transition-transform block flex items-center justify-center gap-4"
     >
-      Comprar Ahora
+      <FaWhatsapp className="h-20 object-cover"/> Pedir más Información
     </a>
   );
 }
