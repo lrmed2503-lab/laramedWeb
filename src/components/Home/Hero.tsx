@@ -19,7 +19,7 @@ export default function Hero(){
     fechData();
   }, []);
   return(
-    <section className="relative h-[100dvh] bg-[url('/fondoHero.webp')] max-h-[900px] bg-cover bg-fixed">
+    <section className="relative h-[100dvh] bg-[url('/fondoHero.webp')] max-h-[900px] bg-cover bg-fixed md:bg-center bg-right">
       <div className="absolute bg-black h-full w-full opacity-40 z-0"/>
         {sliders && sliders.length > 0 ? (
             <Swiper

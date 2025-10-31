@@ -75,7 +75,7 @@ export default function Contactos(){
                     <div className="md:col-span-2 bg-white p-8 rounded-lg shadow-md">
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">Envíanos un Mensaje</h2>
                         
-                        <form className="space-y-6">
+                        <form className="space-y-6" action="https://formsubmit.co/info@laramedbo.com" method="POST">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
@@ -84,12 +84,14 @@ export default function Contactos(){
                                         id="nombre" 
                                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         required
+                                        name="nombre"
                                     />
                                 </div>
                                 
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico *</label>
                                     <input 
+                                        name="email"
                                         type="email" 
                                         id="email" 
                                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -100,7 +102,8 @@ export default function Contactos(){
                             
                             <div>
                                 <label htmlFor="asunto" className="block text-sm font-medium text-gray-700 mb-1">Asunto *</label>
-                                <input 
+                                <input
+                                    name="asunto"
                                     type="text" 
                                     id="asunto" 
                                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -110,14 +113,17 @@ export default function Contactos(){
                             
                             <div>
                                 <label htmlFor="mensaje" className="block text-sm font-medium text-gray-700 mb-1">Mensaje *</label>
-                                <textarea 
+                                <textarea
+                                    name="mensaje" 
                                     id="mensaje" 
                                     rows={5} 
                                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     required
                                 ></textarea>
                             </div>
-                            
+                            <input type="hidden" name="_captcha" value="false" />
+
+                            <input type="hidden" name="_next" value="https://www.laramedbo.com" />
                             <button 
                                 type="submit" 
                                 className="w-full bg-[#15599a] text-white py-3 px-4 rounded-md hover:bg-blue-700 transition duration-300 font-medium"
@@ -133,8 +139,9 @@ export default function Contactos(){
         <section className="py-16">
             <div className="container mx-auto px-5">
                 <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Nuestra Ubicación</h2>
-                
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3825.461079321604!2d-68.11856879999999!3d-16.5028042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f21458357b6c1%3A0x1800c607bdbb826a!2sEdificio%20Villalobos!5e0!3m2!1ses-419!2sbo!4v1761837810013!5m2!1ses-419!2sbo" width={930} height={600} className="mx-auto" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                <a href="https://maps.app.goo.gl/XsyEXHPJvudXkxwd9" target="_blank">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3825.461079321604!2d-68.11856879999999!3d-16.5028042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f21458357b6c1%3A0x1800c607bdbb826a!2sEdificio%20Villalobos!5e0!3m2!1ses-419!2sbo!4v1761837810013!5m2!1ses-419!2sbo" width={930} height={600} className="mx-auto w-full h-[500px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                </a>
             </div>
         </section>
         
