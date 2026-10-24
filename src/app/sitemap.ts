@@ -2,7 +2,8 @@ import type { MetadataRoute } from "next";
 import { obtenerCatalogo } from "@/lib/catalogo";
 import { sitioUrl } from "@/lib/sitio";
 
-export const revalidate = 3600;
+// Se arma en cada visita (al construir no hay conexión al ERP); los datos del ERP se guardan 5 min.
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const c = await obtenerCatalogo();

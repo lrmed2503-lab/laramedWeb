@@ -19,7 +19,8 @@ import {
 } from "@/lib/catalogo-base";
 import { sitioUrl } from "@/lib/sitio";
 
-export const revalidate = 300;
+// Se arma en cada visita (al construir no hay conexión al ERP); los datos del ERP se guardan 5 min.
+export const dynamic = "force-dynamic";
 
 /** Texto corto de cada área (las 6 de inicio); un área nueva muestra cuántos productos tiene. */
 const DETALLE_AREA: Record<string, string> = {

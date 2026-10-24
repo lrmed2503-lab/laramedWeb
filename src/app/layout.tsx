@@ -3,6 +3,7 @@ import { Figtree, Lexend } from "next/font/google";
 import { Encabezado } from "@/components/encabezado";
 import { Pie } from "@/components/pie";
 import { obtenerCatalogo } from "@/lib/catalogo";
+import { CATALOGO_VACIO } from "@/lib/catalogo-base";
 import { sitioUrl } from "@/lib/sitio";
 import "./globals.css";
 
@@ -38,7 +39,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { empresa } = await obtenerCatalogo();
+  // Si el ERP no responde, el encabezado y el pie igual se ven (con los datos de siempre).
+  const { empresa } = await obtenerCatalogo().catch(() => CATALOGO_VACIO);
   return (
     <html lang="es" className={`${lexend.variable} ${figtree.variable}`}>
       <body className="font-sans antialiased">

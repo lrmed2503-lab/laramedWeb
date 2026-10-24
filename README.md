@@ -10,12 +10,19 @@ Web pública (Next.js 15 + Tailwind v4). **No tiene base de datos propia:** todo
 - **Formularios:** cada envío llega al ERP en Ventas → Solicitudes web (con aviso a los vendedores).
 - Los cambios en el ERP aparecen en la web en unos 5 minutos.
 
-## Variables (Vercel → Settings → Environment Variables)
+## Dónde corre
 
-| Variable | Valor |
+En el **mismo servidor del ERP** (VPS de Hostinger), como una caja más de Docker (`web`), detrás
+del mismo candado HTTPS (Caddy). Se instala una vez con `despliegue/instalar-web.sh` del repositorio
+`laramed-erp` y desde ahí **se actualiza sola** cada 5 minutos cuando cambia `main` de este
+repositorio (guía: `docs/servidor.md` del ERP, «Página web»).
+
+Variables (las pone el servidor; la clave sale de su `.env` y nunca va a GitHub):
+
+| Variable | Valor en el servidor |
 | --- | --- |
-| `ERP_URL` | `https://erp.laramedventas.com` |
-| `WEB_API_CLAVE` | la misma clave `WEB_API_CLAVE` del servidor del ERP (secreta) |
+| `ERP_URL` | `http://app:3000` (el ERP por dentro del servidor) |
+| `WEB_API_CLAVE` | la misma `WEB_API_CLAVE` del ERP |
 | `SITIO_URL` | `https://www.laramedbo.com` |
 
 Sin `ERP_URL` y `WEB_API_CLAVE` la web se ve vacía (sin productos) y el formulario pide escribir

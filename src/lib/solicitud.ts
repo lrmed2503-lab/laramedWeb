@@ -73,7 +73,7 @@ export function primerError(e: z.ZodError) {
   };
 }
 
-/** IP de quien envía (Vercel la pone primera en x-forwarded-for). */
+/** IP de quien envía (Caddy, en el servidor, la pone en x-forwarded-for). */
 export function ipCliente(h: { get(n: string): string | null }) {
   return (h.get("x-forwarded-for")?.split(",")[0] ?? h.get("x-real-ip") ?? "")
     .trim()
