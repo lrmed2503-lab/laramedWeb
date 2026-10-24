@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# www.laramedbo.com — página web de LaraMed
 
-## Getting Started
+Web pública (Next.js 15 + Tailwind v4). **No tiene base de datos propia:** todo sale del ERP
+(https://erp.laramedventas.com).
 
-First, run the development server:
+- **Productos:** los marcados «Mostrar en la web» en el ERP (ficha del producto → pestaña
+  «Página web»), con su área, título comercial, frase, beneficios y fotos. Sin precios, costos,
+  stock ni fichas técnicas.
+- **Textos, marcas, clientes y fotos:** ERP → Configuración → Página web.
+- **Formularios:** cada envío llega al ERP en Ventas → Solicitudes web (con aviso a los vendedores).
+- Los cambios en el ERP aparecen en la web en unos 5 minutos.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Dónde corre
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+En el **mismo servidor del ERP** (VPS de Hostinger), como una caja más de Docker (`web`), detrás
+del mismo candado HTTPS (Caddy). Se instala una vez con `despliegue/instalar-web.sh` del repositorio
+`laramed-erp` y desde ahí **se actualiza sola** cada 5 minutos cuando cambia `main` de este
+repositorio (guía: `docs/servidor.md` del ERP, «Página web»).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Variables (las pone el servidor; la clave sale de su `.env` y nunca va a GitHub):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Valor en el servidor |
+| --- | --- |
+| `ERP_URL` | `http://app:3000` (el ERP por dentro del servidor) |
+| `WEB_API_CLAVE` | la misma `WEB_API_CLAVE` del ERP |
+| `SITIO_URL` | `https://www.laramedbo.com` |
 
-## Learn More
+Sin `ERP_URL` y `WEB_API_CLAVE` la web se ve vacía (sin productos) y el formulario pide escribir
+por WhatsApp.
 
-To learn more about Next.js, take a look at the following resources:
+## Páginas
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `/` inicio: áreas, destacados, marcas, servicios, nosotros, clientes y formulario de contacto.
+- `/productos` catálogo con filtros por área (`?area=`), marca y búsqueda.
+- `/productos/[direccion]` producto con fotos, beneficios y formulario de cotización / ficha técnica.
+- `/sitemap.xml` y `/robots.txt` para Google. Las fotos se sirven en `/imagenes/<id>` (pasan al ERP).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Comandos
 
-## Deploy on Vercel
+`pnpm dev` · `pnpm build` · `pnpm lint` · `pnpm typecheck` · `pnpm test`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Para probar en la computadora: copiar `.env.example` a `.env.local` y llenar la clave.
