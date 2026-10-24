@@ -1,64 +1,55 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Colores de la marca LaraMed (sistema de diseño aprobado). */
+@theme {
+  --color-azul: #065694;
+  --color-turquesa: #00d9d0;
+  --color-turquesa-profundo: #00756f;
+  --color-noche: #021e5e;
+  --color-petroleo: #0a4a50;
+  --color-hielo: #eef3f6;
+  --color-tinta: #13202b;
+  --color-niebla: #4e5f6d;
+  --color-niebla-clara: #a9bccb;
+  --color-linea: #d3dee6;
+  --color-whatsapp: #25d366;
+
+  --font-titulo: var(--fuente-lexend), "Trebuchet MS", system-ui, sans-serif;
+  --font-sans: var(--fuente-figtree), "Segoe UI", system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* En la capa base: las clases de Tailwind (text-white en botones, etc.) mandan sobre esto. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+  }
+  body {
+    background: #ffffff;
+    color: var(--color-tinta);
+  }
+  a {
+    color: var(--color-azul);
+  }
+  a:hover {
+    color: var(--color-noche);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-turquesa-profundo);
+    outline-offset: 2px;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Menú del celular con <details>: funciona sin JavaScript. */
+details > summary {
+  list-style: none;
 }
-.cat>h3{
-    transition: all 300ms ease-out;
-}
-.cat>img{
-    transition: all 300ms ease-out;
-}
-.cat:hover>img{
-    box-shadow:2px 2px 10px white;
-    transform:scale(1.05);
-}
-.cardProduct{
-    display:flex;
-    width:500px;
-    font-size:2rem;
-    font-weight:800;
-    flex-direction:column;
-    gap:10px;
-    justify-content:center;
-    aling-items:center;
-    aling-text:center;
-}
-.cardProduct>img{
-    width:400px;
-    height:auto;
-}
-.swiper-button-next,
-.swiper-button-prev {
-  color: #2563eb; /* Color azul */
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+details > summary::-webkit-details-marker {
+  display: none;
 }
 
-.swiper-button-next:after,
-.swiper-button-prev:after {
-  font-size: 20px;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
-
-.swiper-pagination-bullet-active {
-  background: #2563eb;
-}
-
-
-

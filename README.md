@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# www.laramedbo.com — página web de LaraMed
 
-## Getting Started
+Web pública (Next.js 15 + Tailwind v4). **No tiene base de datos propia:** todo sale del ERP
+(https://erp.laramedventas.com).
 
-First, run the development server:
+- **Productos:** los marcados «Mostrar en la web» en el ERP (ficha del producto → pestaña
+  «Página web»), con su área, título comercial, frase, beneficios y fotos. Sin precios, costos,
+  stock ni fichas técnicas.
+- **Textos, marcas, clientes y fotos:** ERP → Configuración → Página web.
+- **Formularios:** cada envío llega al ERP en Ventas → Solicitudes web (con aviso a los vendedores).
+- Los cambios en el ERP aparecen en la web en unos 5 minutos.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Variables (Vercel → Settings → Environment Variables)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Variable | Valor |
+| --- | --- |
+| `ERP_URL` | `https://erp.laramedventas.com` |
+| `WEB_API_CLAVE` | la misma clave `WEB_API_CLAVE` del servidor del ERP (secreta) |
+| `SITIO_URL` | `https://www.laramedbo.com` |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Sin `ERP_URL` y `WEB_API_CLAVE` la web se ve vacía (sin productos) y el formulario pide escribir
+por WhatsApp.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Páginas
 
-## Learn More
+- `/` inicio: áreas, destacados, marcas, servicios, nosotros, clientes y formulario de contacto.
+- `/productos` catálogo con filtros por área (`?area=`), marca y búsqueda.
+- `/productos/[direccion]` producto con fotos, beneficios y formulario de cotización / ficha técnica.
+- `/sitemap.xml` y `/robots.txt` para Google. Las fotos se sirven en `/imagenes/<id>` (pasan al ERP).
 
-To learn more about Next.js, take a look at the following resources:
+## Comandos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`pnpm dev` · `pnpm build` · `pnpm lint` · `pnpm typecheck` · `pnpm test`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Para probar en la computadora: copiar `.env.example` a `.env.local` y llenar la clave.

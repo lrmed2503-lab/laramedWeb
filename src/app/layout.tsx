@@ -1,41 +1,56 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Figtree, Lexend } from "next/font/google";
+import { Encabezado } from "@/components/encabezado";
+import { Pie } from "@/components/pie";
+import { obtenerCatalogo } from "@/lib/catalogo";
+import { sitioUrl } from "@/lib/sitio";
 import "./globals.css";
-import Header from '@/components/Layout/Header'
-import Footer from '@/components/Layout/Footer'
-import Whatsapp from '@/components/Layout/Whatsapp'
-//hola
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const lexend = Lexend({
+  variable: "--fuente-lexend",
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+});
+const figtree = Figtree({
+  variable: "--fuente-figtree",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Laramed S.R.L: Líder en Importación de Equipos Médicos en Bolivia",
-  description: "Laramed S.R.L es una empresa importadora y distribuidora de equipo e insumo medico, nos enfocamos en las areas de: EMERGENCIAS, QUIROFANO, TERAPIA INTENSIVA y HERMODIALISIS.",
+  metadataBase: new URL(sitioUrl()),
+  title: {
+    default: "LaraMed · Equipos médicos y servicio técnico en Bolivia",
+    template: "%s · LaraMed",
+  },
+  description:
+    "Importadores de equipos e insumos médicos desde 2021: ventilación, anestesia, monitoreo, infusión y diagnóstico, con instalación, capacitación y servicio técnico propio. La Paz, El Alto y Cochabamba.",
+  openGraph: { siteName: "LaraMed", locale: "es_BO", type: "website" },
+  alternates: { canonical: "/" },
 };
 
-export default function RootLayout({
+export const viewport: Viewport = { themeColor: "#065694" };
+
+export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const { empresa } = await obtenerCatalogo();
   return (
-    <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Header />
-        <main>
-          {children}
-        </main>
-        <Whatsapp />
-        <Footer />
+    <html lang="es" className={`${lexend.variable} ${figtree.variable}`}>
+      <body className="font-sans antialiased">
+        <a
+          href="#contenido"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2"
+        >
+          Ir al contenido
+        </a>
+        <Encabezado whatsapp={empresa.whatsapp} />
+        <main id="contenido">{children}</main>
+        <Pie empresa={empresa} />
       </body>
     </html>
   );
