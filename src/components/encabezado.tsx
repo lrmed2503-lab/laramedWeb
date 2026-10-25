@@ -5,9 +5,9 @@ import { enlaceWhatsapp } from "@/lib/catalogo-base";
 
 const ENLACES = [
   { href: "/productos", texto: "Productos" },
-  { href: "/#servicios", texto: "Servicios" },
-  { href: "/#nosotros", texto: "Nosotros" },
-  { href: "/#clientes", texto: "Clientes" },
+  { href: "/servicios/servicio-tecnico", texto: "Servicio técnico" },
+  { href: "/servicios/alquiler-de-equipos", texto: "Alquiler" },
+  { href: "/nosotros", texto: "Nosotros" },
   { href: "/#contacto", texto: "Contacto" },
 ];
 

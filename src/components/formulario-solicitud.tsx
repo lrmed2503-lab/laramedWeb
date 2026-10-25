@@ -30,7 +30,7 @@ function Campo({
 
 /**
  * Formulario que llega al ERP como «Solicitud web». Con `producto` se liga al producto; con
- * `pestanas` se elige entre cotización y ficha técnica.
+ * `pestanas` se elige entre cotización y ficha técnica; con `opciones`, el tipo de servicio.
  */
 export function FormularioSolicitud({
   tipoInicial = "cotizacion",
@@ -40,6 +40,7 @@ export function FormularioSolicitud({
   boton,
   mensajeEtiqueta = "¿Qué necesita?",
   mensajeEjemplo = "Ej.: 2 monitores multiparamétricos para UTI",
+  opciones,
 }: {
   tipoInicial?: TipoSolicitud;
   producto?: { slug: string; titulo: string };
@@ -48,6 +49,8 @@ export function FormularioSolicitud({
   boton?: string;
   mensajeEtiqueta?: string;
   mensajeEjemplo?: string;
+  /** Lista para elegir el tipo (p. ej. reparación, contrato, instalación, capacitación). */
+  opciones?: readonly (readonly [TipoSolicitud, string])[];
 }) {
   const [estado, enviar, enviando] = useActionState<EstadoSolicitud, FormData>(
     enviarSolicitud,
@@ -127,6 +130,21 @@ export function FormularioSolicitud({
         </div>
       )}
       <input type="hidden" name="tipo" value={tipo} />
+      {opciones && (
+        <Campo etiqueta="¿Qué necesita?" ancho>
+          <select
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value as TipoSolicitud)}
+            className={CAMPO}
+          >
+            {opciones.map(([t, texto]) => (
+              <option key={t} value={t}>
+                {texto}
+              </option>
+            ))}
+          </select>
+        </Campo>
+      )}
       <input type="hidden" name="pagina" value={pagina} />
       {producto && (
         <>
