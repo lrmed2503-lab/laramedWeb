@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
+  CATALOGO_VACIO,
   descripcionProducto,
   destacados,
+  enlaceMapa,
   enlaceWhatsapp,
   etiquetaProducto,
   filtrarProductos,
   fotoDeArea,
   marcasDeProductos,
+  oficinasDeEmpresa,
   type Producto,
   relacionados,
   srcsetImagen,
@@ -120,5 +123,32 @@ describe("textos", () => {
     });
     expect(largo.length).toBeLessThanOrEqual(156);
     expect(largo.endsWith("…")).toBe(true);
+  });
+});
+
+describe("oficinas", () => {
+  it("usa las direcciones del ERP o, si faltan, las ciudades", () => {
+    expect(
+      oficinasDeEmpresa(CATALOGO_VACIO.empresa).map((o) => o.ciudad),
+    ).toEqual(["La Paz", "El Alto", "Cochabamba"]);
+    const conDir = {
+      ciudad: "La Paz",
+      direccion: "Av. Villalobos #1660",
+      nota: null,
+    };
+    expect(
+      oficinasDeEmpresa({ ...CATALOGO_VACIO.empresa, direcciones: [conDir] }),
+    ).toEqual([conDir]);
+  });
+  it("enlace a Google Maps", () => {
+    expect(
+      enlaceMapa({
+        ciudad: "La Paz",
+        direccion: "Av. Villalobos #1660",
+        nota: null,
+      }),
+    ).toBe(
+      "https://www.google.com/maps/search/?api=1&query=Av.%20Villalobos%20%231660%2C%20La%20Paz%2C%20Bolivia",
+    );
   });
 });

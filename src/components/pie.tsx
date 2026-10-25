@@ -60,6 +60,30 @@ export function Pie({ empresa }: { empresa: Empresa }) {
               Catálogo
             </Link>
           </p>
+          <p className="m-0">
+            <Link
+              href="/servicios/servicio-tecnico"
+              className="text-niebla-clara hover:text-white"
+            >
+              Servicio técnico
+            </Link>
+          </p>
+          <p className="m-0">
+            <Link
+              href="/servicios/alquiler-de-equipos"
+              className="text-niebla-clara hover:text-white"
+            >
+              Alquiler de equipos
+            </Link>
+          </p>
+          <p className="m-0">
+            <Link
+              href="/nosotros"
+              className="text-niebla-clara hover:text-white"
+            >
+              Nosotros
+            </Link>
+          </p>
           {empresa.facebook && (
             <p className="m-0">
               <a

@@ -18,7 +18,12 @@ const nextConfig: NextConfig = {
         destination: "/productos",
         permanent: true,
       },
-      { source: "/sobre-nosotros", destination: "/#nosotros", permanent: true },
+      { source: "/sobre-nosotros", destination: "/nosotros", permanent: true },
+      {
+        source: "/servicios",
+        destination: "/servicios/servicio-tecnico",
+        permanent: false,
+      },
       { source: "/contactos", destination: "/#contacto", permanent: true },
       { source: "/noticias", destination: "/", permanent: true },
       { source: "/admin/:path*", destination: "/", permanent: false },

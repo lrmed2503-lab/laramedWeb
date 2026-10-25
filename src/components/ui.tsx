@@ -9,6 +9,7 @@ const BOTON = {
   acento: "bg-turquesa text-noche hover:bg-[#00c2ba] hover:text-noche",
   borde:
     "border border-linea bg-white text-tinta hover:border-azul hover:text-azul",
+  emergencia: "bg-[#b42318] text-white hover:bg-[#8f1c13] hover:text-white",
   bordeAzul:
     "border border-azul bg-white text-azul hover:bg-hielo hover:text-azul",
 } as const;

@@ -26,6 +26,12 @@ export type Producto = {
 
 export type Area = { slug: string; nombre: string; productos: number };
 
+export type Oficina = {
+  ciudad: string;
+  direccion: string | null;
+  nota: string | null;
+};
+
 export type Empresa = {
   titular: string;
   subtitulo: string;
@@ -33,6 +39,8 @@ export type Empresa = {
   desde: string;
   oficinas: string[];
   cobertura: string;
+  /** Oficinas con dirección (ERP: Configuración → Página web). Puede faltar en versiones viejas. */
+  direcciones?: Oficina[];
   whatsapp: string;
   correo: string;
   facebook: string | null;
@@ -187,4 +195,16 @@ export function descripcionProducto(p: Producto) {
   return texto.length <= 158
     ? texto
     : `${texto.slice(0, 155).replace(/\s+\S*$/, "")}…`;
+}
+
+/** Oficinas para «Nosotros»: las del ERP o, si no hay, las ciudades sin dirección. */
+export function oficinasDeEmpresa(e: Empresa): Oficina[] {
+  if (e.direcciones?.length) return e.direcciones;
+  return e.oficinas.map((ciudad) => ({ ciudad, direccion: null, nota: null }));
+}
+
+/** «Cómo llegar» en Google Maps a partir de la dirección y la ciudad. */
+export function enlaceMapa(o: Oficina) {
+  const q = [o.direccion, o.ciudad, "Bolivia"].filter(Boolean).join(", ");
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
 }

@@ -37,20 +37,20 @@ const detalleArea = (a: Area) =>
   (a.productos === 1 ? "1 producto" : `${a.productos} productos`);
 
 const SERVICIOS = [
-  [
-    "Servicio técnico",
-    "Mantenimiento preventivo y correctivo, también de equipos de otras marcas.",
-  ],
-  [
-    "Contratos de mantenimiento",
-    "Visitas programadas, inspecciones y repuestos menores incluidos.",
-  ],
-  [
-    "Alquiler de equipos",
-    "Ventiladores y otros equipos por día o por horas de uso.",
-  ],
-  ["Instalación", "Puesta en marcha en su servicio, con acta de entrega."],
-  ["Capacitación", "Formación al personal en el uso y cuidado del equipo."],
+  {
+    href: "/servicios/servicio-tecnico",
+    nombre: "Servicio técnico",
+    detalle:
+      "Mantenimiento preventivo y correctivo, contratos, instalación y capacitación. Atendemos equipos de la mayoría de las marcas, con emergencias las 24 horas.",
+    boton: "Conocer el servicio técnico",
+  },
+  {
+    href: "/servicios/alquiler-de-equipos",
+    nombre: "Alquiler de equipos",
+    detalle:
+      "Ventiladores mecánicos, monitores, bombas de infusión, máquinas de hemodiálisis y otros equipos para hospitales, clínicas y pacientes en casa.",
+    boton: "Ver alquiler de equipos",
+  },
 ] as const;
 
 export default async function Inicio() {
@@ -254,30 +254,44 @@ export default async function Inicio() {
             Acompañamos el equipo durante toda su vida útil
           </h2>
           <p className="mt-0 mb-9 max-w-[640px] text-[17px] leading-normal text-niebla-clara">
-            Prevención es sinónimo de calidad. Nuestro equipo técnico atiende
-            también equipos de otras marcas.
+            Instalamos, capacitamos y mantenemos los equipos de su servicio, y
+            le alquilamos los que necesite por un tiempo.
           </p>
-          <ul className="m-0 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-5">
-            {SERVICIOS.map(([nombre, detalle]) => (
+          <ul className="m-0 grid list-none grid-cols-1 gap-5 p-0 md:grid-cols-2">
+            {SERVICIOS.map((sv) => (
               <li
-                key={nombre}
-                className="flex flex-col gap-2.5 rounded-[20px] border border-white/15 p-5"
+                key={sv.href}
+                className="flex flex-col gap-3 rounded-3xl border border-white/15 p-6 sm:p-7"
               >
-                <span className="font-titulo text-lg font-semibold">
-                  {nombre}
-                </span>
-                <span className="text-sm leading-snug text-niebla-clara">
-                  {detalle}
-                </span>
+                <h3 className="m-0 font-titulo text-2xl font-semibold">
+                  {sv.nombre}
+                </h3>
+                <p className="m-0 leading-relaxed text-niebla-clara">
+                  {sv.detalle}
+                </p>
                 <Link
-                  href="/#contacto"
-                  className="mt-auto text-sm font-semibold text-turquesa hover:text-white"
+                  href={sv.href}
+                  className={`${claseBoton("acento", true)} mt-2 self-start`}
                 >
-                  Solicitar →<span className="sr-only"> {nombre}</span>
+                  {sv.boton}
                 </Link>
               </li>
             ))}
           </ul>
+          <p className="mt-6 mb-0 text-niebla-clara">
+            ¿Un equipo detenido?{" "}
+            <a
+              href={enlaceWhatsapp(
+                empresa.whatsapp,
+                "EMERGENCIA – Equipo detenido. Equipo y marca: … Lugar: … ",
+              )}
+              target="_blank"
+              rel="noopener"
+              className="font-semibold text-turquesa hover:text-white"
+            >
+              Emergencias las 24 horas por WhatsApp →
+            </a>
+          </p>
         </div>
       </section>
 
@@ -342,6 +356,9 @@ export default async function Inicio() {
               </li>
             ))}
           </ul>
+          <Link href="/nosotros" className="font-semibold">
+            Conozca más sobre LaraMed →
+          </Link>
         </div>
       </section>
 
