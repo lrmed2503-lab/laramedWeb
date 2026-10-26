@@ -5,6 +5,7 @@ import { enlaceWhatsapp } from "@/lib/catalogo-base";
 
 const ENLACES = [
   { href: "/productos", texto: "Productos" },
+  { href: "/veterinaria", texto: "Veterinaria" },
   { href: "/servicios/servicio-tecnico", texto: "Servicio técnico" },
   { href: "/servicios/alquiler-de-equipos", texto: "Alquiler" },
   { href: "/nosotros", texto: "Nosotros" },
@@ -34,7 +35,7 @@ export function Encabezado({
 }) {
   return (
     <header className="sticky top-0 z-20 border-b border-linea bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-[1240px] items-center gap-6 px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-[1240px] items-center gap-4 px-4 py-3 sm:px-6 xl:gap-6">
         <Logo />
         <nav
           aria-label="Principal"
@@ -45,7 +46,7 @@ export function Encabezado({
               key={e.href}
               href={e.href}
               aria-current={actual === e.href ? "page" : undefined}
-              className={`rounded-full px-3.5 py-2.5 no-underline ${
+              className={`rounded-full px-2.5 py-2.5 whitespace-nowrap no-underline xl:px-3.5 ${
                 actual === e.href
                   ? "bg-hielo font-semibold text-azul"
                   : "text-tinta hover:bg-hielo hover:text-azul"
@@ -63,7 +64,8 @@ export function Encabezado({
             )}
             target="_blank"
             rel="noopener"
-            className={claseBoton("borde", true)}
+            // Entre 1024 y 1279 px el menú necesita el espacio; el WhatsApp sigue en el pie y en Contacto.
+            className={`${claseBoton("borde", true)} lg:max-xl:hidden`}
           >
             <IconoWhatsapp className="size-[18px]" />
             {whatsapp}

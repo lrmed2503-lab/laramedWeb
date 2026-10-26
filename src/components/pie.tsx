@@ -62,6 +62,14 @@ export function Pie({ empresa }: { empresa: Empresa }) {
           </p>
           <p className="m-0">
             <Link
+              href="/veterinaria"
+              className="text-niebla-clara hover:text-white"
+            >
+              Veterinaria
+            </Link>
+          </p>
+          <p className="m-0">
+            <Link
               href="/servicios/servicio-tecnico"
               className="text-niebla-clara hover:text-white"
             >
