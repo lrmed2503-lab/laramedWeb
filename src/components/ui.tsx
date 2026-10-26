@@ -121,7 +121,7 @@ export function TarjetaProducto({
             ruta={p.fotos[0]}
             alt=""
             sizes="(max-width: 640px) 90vw, 300px"
-            className="block max-h-44 max-w-full object-contain"
+            className="block size-full object-contain mix-blend-multiply"
             prioridad={prioridad}
           />
         ) : (
