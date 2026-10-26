@@ -164,12 +164,14 @@ export default async function Inicio() {
                   className="flex items-center gap-4 rounded-[20px] border border-linea bg-white p-4 text-tinta no-underline hover:border-azul"
                 >
                   {foto ? (
-                    <Foto
-                      ruta={foto}
-                      alt=""
-                      sizes="92px"
-                      className="size-[92px] shrink-0 rounded-2xl bg-hielo object-contain p-1"
-                    />
+                    <span className="size-[92px] shrink-0 rounded-2xl bg-hielo p-1">
+                      <Foto
+                        ruta={foto}
+                        alt=""
+                        sizes="92px"
+                        className="block size-full object-contain mix-blend-multiply"
+                      />
+                    </span>
                   ) : (
                     <span className="size-[92px] shrink-0 rounded-2xl bg-hielo" />
                   )}

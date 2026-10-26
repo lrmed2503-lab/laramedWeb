@@ -17,7 +17,7 @@ export function Galeria({ fotos, alt }: { fotos: string[]; alt: string }) {
           ruta={fotos[actual]}
           alt={actual === 0 ? alt : `${alt}, foto ${actual + 1}`}
           sizes="(max-width: 768px) 90vw, 560px"
-          className="block max-h-full max-w-full object-contain"
+          className="block size-full object-contain mix-blend-multiply"
           prioridad={actual === 0}
         />
       </div>
@@ -38,7 +38,7 @@ export function Galeria({ fotos, alt }: { fotos: string[]; alt: string }) {
                 ruta={f}
                 alt=""
                 sizes="84px"
-                className="size-full object-contain"
+                className="size-full object-contain mix-blend-multiply"
               />
             </button>
           ))}
