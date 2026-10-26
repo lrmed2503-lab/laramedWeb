@@ -5,6 +5,7 @@ import {
   destacados,
   enlaceMapa,
   enlaceWhatsapp,
+  estaEnArea,
   etiquetaProducto,
   filtrarProductos,
   fotoDeArea,
@@ -150,5 +151,32 @@ describe("oficinas", () => {
     ).toBe(
       "https://www.google.com/maps/search/?api=1&query=Av.%20Villalobos%20%231660%2C%20La%20Paz%2C%20Bolivia",
     );
+  });
+});
+
+describe("también se usa en", () => {
+  const bomba = p({
+    slug: "bomba",
+    area: "infusion",
+    areas: ["infusion", "quirofano", "cuidados-intensivos"],
+    fotos: ["/api/web/imagen/b1"],
+  });
+  it("aparece en su área principal y en las adicionales", () => {
+    expect(estaEnArea(bomba, "infusion")).toBe(true);
+    expect(estaEnArea(bomba, "quirofano")).toBe(true);
+    expect(estaEnArea(bomba, "monitoreo")).toBe(false);
+    expect(estaEnArea(monitor, "monitoreo")).toBe(true);
+    expect(filtrarProductos([...todos, bomba], { area: "quirofano" })).toEqual([
+      bomba,
+    ]);
+  });
+  it("la foto del área prefiere el área principal", () => {
+    expect(fotoDeArea([bomba, ventilador], "cuidados-intensivos")).toBe(
+      "/api/web/imagen/a1",
+    );
+    expect(fotoDeArea([bomba], "quirofano")).toBe("/api/web/imagen/b1");
+  });
+  it("relacionados por un área en común", () => {
+    expect(relacionados([ventilador, bomba], ventilador)).toEqual([bomba]);
   });
 });
