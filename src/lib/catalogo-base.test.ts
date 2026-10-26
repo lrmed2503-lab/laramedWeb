@@ -13,6 +13,7 @@ import {
   oficinasDeEmpresa,
   type Producto,
   relacionados,
+  separarVeterinaria,
   srcsetImagen,
   urlImagen,
 } from "./catalogo-base";
@@ -178,5 +179,35 @@ describe("también se usa en", () => {
   });
   it("relacionados por un área en común", () => {
     expect(relacionados([ventilador, bomba], ventilador)).toEqual([bomba]);
+  });
+});
+
+describe("veterinaria", () => {
+  const catalogo = {
+    ...CATALOGO_VACIO,
+    areas: [
+      { slug: "infusion", nombre: "Infusión", productos: 1 },
+      { slug: "veterinaria", nombre: "Veterinaria", productos: 1 },
+    ],
+    productos: [
+      p({ slug: "bomba", area: "infusion", areas: ["infusion"] }),
+      p({ slug: "bomba-vet", area: "veterinaria", areas: ["veterinaria"] }),
+    ],
+  };
+
+  it("los equipos veterinarios van aparte del catálogo médico", () => {
+    const { medico, veterinarios } = separarVeterinaria(catalogo);
+    expect(medico.productos.map((x) => x.slug)).toEqual(["bomba"]);
+    expect(medico.areas.map((a) => a.slug)).toEqual(["infusion"]);
+    expect(veterinarios.map((x) => x.slug)).toEqual(["bomba-vet"]);
+  });
+
+  it("sin área Veterinaria todo queda en el catálogo médico", () => {
+    const { medico, veterinarios } = separarVeterinaria({
+      ...catalogo,
+      productos: [p({ slug: "bomba", area: "infusion" })],
+    });
+    expect(medico.productos).toHaveLength(1);
+    expect(veterinarios).toEqual([]);
   });
 });

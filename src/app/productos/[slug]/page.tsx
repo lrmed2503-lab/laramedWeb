@@ -5,12 +5,14 @@ import { notFound } from "next/navigation";
 import { FormularioSolicitud } from "@/components/formulario-solicitud";
 import { BarraMovil } from "@/components/pie";
 import { claseBoton, IconoWhatsapp, TarjetaProducto } from "@/components/ui";
-import { obtenerCatalogo } from "@/lib/catalogo";
+import { obtenerCatalogoCompleto } from "@/lib/catalogo";
 import {
+  AREA_VETERINARIA,
   descripcionProducto,
   enlaceWhatsapp,
   etiquetaProducto,
   relacionados,
+  separarVeterinaria,
   urlImagen,
 } from "@/lib/catalogo-base";
 import { sitioUrl } from "@/lib/sitio";
@@ -20,13 +22,14 @@ export const revalidate = 300;
 
 type Params = Promise<{ slug: string }>;
 
+/** Busca en todo el catálogo: los equipos veterinarios también tienen su ficha aquí. */
 async function buscar(slug: string) {
-  const c = await obtenerCatalogo();
+  const c = await obtenerCatalogoCompleto();
   return { c, p: c.productos.find((x) => x.slug === slug) ?? null };
 }
 
 export async function generateStaticParams() {
-  const c = await obtenerCatalogo();
+  const c = await obtenerCatalogoCompleto();
   return c.productos.map((p) => ({ slug: p.slug }));
 }
 
@@ -54,17 +57,23 @@ export default async function ProductoPagina({ params }: { params: Params }) {
   const { slug } = await params;
   const { c, p } = await buscar(slug);
   if (!p) notFound();
-  const area = c.areas.find((a) => a.slug === p.area);
-  const otros = relacionados(c.productos, p, 3);
+  // Un equipo veterinario se relaciona solo con otros veterinarios y su ruta pasa por /veterinaria.
+  const vet = p.area === AREA_VETERINARIA;
+  const { medico, veterinarios } = separarVeterinaria(c);
+  const seccion = vet
+    ? { nombre: "Veterinaria", href: "/veterinaria" }
+    : { nombre: "Productos", href: "/productos" };
+  const area = vet ? undefined : c.areas.find((a) => a.slug === p.area);
+  const otros = relacionados(vet ? veterinarios : medico.productos, p, 3);
   const nombreArea = new Map(c.areas.map((a) => [a.slug, a.nombre]));
-  const usoEn = c.areas.filter((a) => (p.areas ?? []).includes(a.slug));
+  const usoEn = medico.areas.filter((a) => (p.areas ?? []).includes(a.slug));
   const etiqueta = etiquetaProducto(p);
   const migas = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
       { name: "Inicio", item: `${sitioUrl()}/` },
-      { name: "Productos", item: `${sitioUrl()}/productos` },
+      { name: seccion.nombre, item: `${sitioUrl()}${seccion.href}` },
       ...(area
         ? [
             {
@@ -94,7 +103,7 @@ export default async function ProductoPagina({ params }: { params: Params }) {
       <section className="mx-auto max-w-[1240px] px-4 pt-6 pb-16 sm:px-6">
         <nav aria-label="Ruta" className="mb-6 text-sm text-niebla">
           <Link href="/">Inicio</Link> /{" "}
-          <Link href="/productos">Productos</Link>
+          <Link href={seccion.href}>{seccion.nombre}</Link>
           {area && (
             <>
               {" / "}

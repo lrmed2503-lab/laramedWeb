@@ -109,6 +109,25 @@ export function estaEnArea(p: Producto, area: string) {
   return p.area === area || (p.areas ?? []).includes(area);
 }
 
+/** Área del ERP (Configuración → Página web) de los equipos de uso veterinario. */
+export const AREA_VETERINARIA = "veterinaria";
+
+/**
+ * Los equipos veterinarios (área principal «Veterinaria») van en su propia sección (/veterinaria):
+ * no se mezclan con el catálogo médico, el inicio ni las áreas del hospital.
+ */
+export function separarVeterinaria(c: Catalogo) {
+  const esVet = (p: Producto) => p.area === AREA_VETERINARIA;
+  return {
+    medico: {
+      ...c,
+      areas: c.areas.filter((a) => a.slug !== AREA_VETERINARIA),
+      productos: c.productos.filter((p) => !esVet(p)),
+    },
+    veterinarios: c.productos.filter(esVet),
+  };
+}
+
 export type Filtros = { area?: string; marca?: string; q?: string };
 
 /** Productos que pasan los filtros del catálogo (área, marca y texto, sin tildes). */
