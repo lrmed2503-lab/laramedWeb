@@ -57,6 +57,7 @@ export default async function ProductoPagina({ params }: { params: Params }) {
   const area = c.areas.find((a) => a.slug === p.area);
   const otros = relacionados(c.productos, p, 3);
   const nombreArea = new Map(c.areas.map((a) => [a.slug, a.nombre]));
+  const usoEn = c.areas.filter((a) => (p.areas ?? []).includes(a.slug));
   const etiqueta = etiquetaProducto(p);
   const migas = {
     "@context": "https://schema.org",
@@ -132,6 +133,20 @@ export default async function ProductoPagina({ params }: { params: Params }) {
                   </li>
                 ))}
               </ul>
+            )}
+            {usoEn.length > 1 && (
+              <p className="m-0 flex flex-wrap items-center gap-2 text-sm text-niebla">
+                Se usa en:
+                {usoEn.map((a) => (
+                  <Link
+                    key={a.slug}
+                    href={`/productos?area=${a.slug}`}
+                    className="rounded-full border border-linea px-3 py-1 text-tinta no-underline hover:border-azul hover:text-azul"
+                  >
+                    {a.nombre}
+                  </Link>
+                ))}
+              </p>
             )}
             <dl className="m-0 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
               {datos.map(([t, v]) => (

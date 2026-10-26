@@ -16,7 +16,10 @@ export type Producto = {
   modelo: string | null;
   pais: string | null;
   registroAgemed: string | null;
+  /** Área principal (lo que el equipo es). */
   area: string | null;
+  /** Todas sus áreas: la principal y las de «También se usa en» (ERP nuevo). */
+  areas?: string[];
   frase: string | null;
   beneficios: string[];
   destacado: boolean;
@@ -101,6 +104,11 @@ export function srcsetImagen(ruta: string) {
 const normalizar = (t: string) =>
   t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
+/** El producto aparece en el área: la principal o una de «También se usa en». */
+export function estaEnArea(p: Producto, area: string) {
+  return p.area === area || (p.areas ?? []).includes(area);
+}
+
 export type Filtros = { area?: string; marca?: string; q?: string };
 
 /** Productos que pasan los filtros del catálogo (área, marca y texto, sin tildes). */
@@ -110,7 +118,7 @@ export function filtrarProductos(productos: Producto[], f: Filtros) {
     .filter(Boolean);
   const marca = f.marca ? normalizar(f.marca) : "";
   return productos.filter((p) => {
-    if (f.area && p.area !== f.area) return false;
+    if (f.area && !estaEnArea(p, f.area)) return false;
     if (marca && normalizar(p.marca ?? "") !== marca) return false;
     if (!palabras.length) return true;
     const texto = normalizar(
@@ -140,11 +148,15 @@ export function destacados(productos: Producto[], cuantos = 4) {
   return [...marcados, ...resto].slice(0, cuantos);
 }
 
-/** «También le puede interesar»: misma área primero, luego misma marca. */
+/** «También le puede interesar»: misma área principal, otra área en común, luego misma marca. */
 export function relacionados(productos: Producto[], p: Producto, cuantos = 3) {
   const otros = productos.filter((o) => o.slug !== p.slug);
   const puntos = (o: Producto) =>
-    (o.area && o.area === p.area ? 2 : 0) +
+    (o.area && o.area === p.area
+      ? 2
+      : (o.areas ?? []).some((a) => estaEnArea(p, a))
+        ? 1
+        : 0) +
     (o.marca && p.marca && normalizar(o.marca) === normalizar(p.marca)
       ? 1
       : 0) +
@@ -157,10 +169,14 @@ export function relacionados(productos: Producto[], p: Producto, cuantos = 3) {
     .map((x) => x.o);
 }
 
-/** Foto que representa un área en el inicio: la del primer producto del área que tenga foto. */
+/** Foto que representa un área en el inicio: la de un producto con foto, primero los del área principal. */
 export function fotoDeArea(productos: Producto[], area: string) {
+  const conFoto = productos.filter((p) => p.fotos.length);
   return (
-    productos.find((p) => p.area === area && p.fotos.length)?.fotos[0] ?? null
+    (
+      conFoto.find((p) => p.area === area) ??
+      conFoto.find((p) => estaEnArea(p, area))
+    )?.fotos[0] ?? null
   );
 }
 
