@@ -31,8 +31,13 @@ por WhatsApp.
 ## Páginas
 
 - `/` inicio: áreas, destacados, marcas, servicios, nosotros, clientes y formulario de contacto.
-- `/productos` catálogo con filtros por área (`?area=`), marca y búsqueda.
-- `/productos/[direccion]` producto con fotos, beneficios y formulario de cotización / ficha técnica.
+- Productos en tres familias, según el tipo del producto en el ERP (prefijo del código), cada una con
+  filtros por área (`?area=`, solo las áreas con productos de esa familia), marca y búsqueda:
+  `/productos` equipos médicos (EQ-), `/insumos` insumos y consumibles (CON-) y `/repuestos`
+  repuestos y accesorios (REP-). En el menú van dentro de «Productos». Las áreas sirven de categorías
+  en las tres (p. ej. un área «Material de impresión médica» para el papel y las placas).
+- `/productos/[direccion]` producto con fotos, beneficios y formulario de cotización / ficha técnica;
+  en los equipos, «Repuestos y accesorios» de su misma área.
 - `/sitemap.xml` y `/robots.txt` para Google. Las fotos se sirven en `/imagenes/<id>` (pasan al ERP).
 
 ## Comandos

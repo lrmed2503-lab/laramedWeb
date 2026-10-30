@@ -13,9 +13,13 @@ import {
 import { obtenerCatalogo } from "@/lib/catalogo";
 import {
   type Area,
+  areasConProductos,
+  deFamilia,
   destacados,
   enlaceWhatsapp,
+  FAMILIAS,
   fotoDeArea,
+  ORDEN_FAMILIAS,
 } from "@/lib/catalogo-base";
 import { sitioUrl } from "@/lib/sitio";
 
@@ -56,9 +60,20 @@ const SERVICIOS = [
 export default async function Inicio() {
   const c = await obtenerCatalogo();
   const { empresa } = c;
-  const lista = destacados(c.productos, 4);
+  // Las áreas, los destacados y la foto principal son de equipos; insumos y repuestos tienen su
+  // propio bloque (solo cuando hay alguno publicado).
+  const equipos = deFamilia(c.productos, "equipos");
+  const lista = destacados(equipos, 4);
   const principal = lista.find((p) => p.fotos.length) ?? null;
-  const areas = c.areas.filter((a) => a.productos > 0);
+  const areas = areasConProductos(c.areas, equipos);
+  const familias = ORDEN_FAMILIAS.map((f) => {
+    const productos = deFamilia(c.productos, f);
+    return {
+      f,
+      cuantos: productos.length,
+      foto: productos.find((p) => p.fotos.length)?.fotos[0] ?? null,
+    };
+  }).filter((x) => x.cuantos > 0);
   const nombreArea = new Map(c.areas.map((a) => [a.slug, a.nombre]));
   const ciudades = empresa.oficinas.join(" · ").toUpperCase();
   const organizacion = {
@@ -148,6 +163,48 @@ export default async function Inicio() {
         </div>
       </section>
 
+      {familias.length > 1 && (
+        <section className="mx-auto max-w-[1240px] px-4 pt-16 sm:px-6 lg:pt-20">
+          <Antetitulo>Nuestros productos</Antetitulo>
+          <h2 className="mt-2.5 mb-8 font-titulo text-[28px] font-semibold text-noche sm:text-4xl">
+            Equipos, insumos y repuestos
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {familias.map(({ f, cuantos, foto }) => (
+              <Link
+                key={f}
+                href={FAMILIAS[f].ruta}
+                className="flex items-center gap-4 rounded-[20px] border border-linea bg-white p-4 text-tinta no-underline hover:border-azul"
+              >
+                {foto ? (
+                  <span className="size-[92px] shrink-0 rounded-2xl bg-hielo p-1">
+                    <Foto
+                      ruta={foto}
+                      alt=""
+                      sizes="92px"
+                      className="block size-full object-contain mix-blend-multiply"
+                    />
+                  </span>
+                ) : (
+                  <span className="size-[92px] shrink-0 rounded-2xl bg-hielo" />
+                )}
+                <span className="flex flex-col gap-1">
+                  <span className="font-titulo text-lg font-semibold text-noche">
+                    {FAMILIAS[f].nombre}
+                  </span>
+                  <span className="text-sm leading-snug text-niebla">
+                    {FAMILIAS[f].detalle}
+                  </span>
+                  <span className="text-sm font-semibold text-azul">
+                    {cuantos === 1 ? "1 producto" : `${cuantos} productos`}
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {areas.length > 0 && (
         <section className="mx-auto max-w-[1240px] px-4 pt-16 pb-8 sm:px-6 lg:pt-20">
           <Antetitulo>Productos por área</Antetitulo>
@@ -156,7 +213,7 @@ export default async function Inicio() {
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {areas.map((a) => {
-              const foto = fotoDeArea(c.productos, a.slug);
+              const foto = fotoDeArea(equipos, a.slug);
               return (
                 <Link
                   key={a.slug}

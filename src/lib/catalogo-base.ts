@@ -128,6 +128,92 @@ export function separarVeterinaria(c: Catalogo) {
   };
 }
 
+/** Familias del catálogo: salen del tipo de producto del ERP (prefijo del código EQ-, CON-, REP-). */
+export type Familia = "equipos" | "insumos" | "repuestos";
+
+export const FAMILIAS: Record<
+  Familia,
+  {
+    nombre: string;
+    ruta: string;
+    /** Texto corto para el menú y las tarjetas del inicio. */
+    detalle: string;
+    /** Título para Google de la familia o de una de sus áreas. */
+    tituloGoogle: string;
+    buscar: string;
+    vacio: string;
+  }
+> = {
+  equipos: {
+    nombre: "Equipos médicos",
+    ruta: "/productos",
+    detalle: "Ventilación, anestesia, monitoreo, infusión y diagnóstico",
+    tituloGoogle: "equipos médicos en Bolivia",
+    buscar: "Buscar equipo, marca o modelo…",
+    vacio: "Importamos bajo pedido. Cuéntenos qué equipo necesita.",
+  },
+  insumos: {
+    nombre: "Insumos y consumibles",
+    ruta: "/insumos",
+    detalle: "Material de impresión médica e insumos para quirófano y terapia",
+    tituloGoogle: "insumos médicos en Bolivia",
+    buscar: "Buscar insumo, papel, circuito…",
+    vacio: "Cuéntenos qué insumo necesita y le cotizamos.",
+  },
+  repuestos: {
+    nombre: "Repuestos y accesorios",
+    ruta: "/repuestos",
+    detalle: "Cables, sensores, brazaletes y repuestos para sus equipos",
+    tituloGoogle: "repuestos y accesorios para equipos médicos en Bolivia",
+    buscar: "Buscar repuesto, sensor, cable…",
+    vacio:
+      "Díganos el equipo (marca y modelo) y el repuesto que busca: lo conseguimos.",
+  },
+};
+
+export const ORDEN_FAMILIAS: Familia[] = ["equipos", "insumos", "repuestos"];
+
+/** Familia del producto según su código (CON- insumos, REP- repuestos; lo demás, equipos). */
+export function familiaDe(p: Pick<Producto, "codigo">): Familia {
+  const prefijo = p.codigo.split("-")[0]?.toUpperCase();
+  if (prefijo === "CON") return "insumos";
+  if (prefijo === "REP") return "repuestos";
+  return "equipos";
+}
+
+export const deFamilia = (productos: Producto[], f: Familia) =>
+  productos.filter((p) => familiaDe(p) === f);
+
+/** Áreas con al menos un producto de la lista, con la cuenta de esa lista. */
+export function areasConProductos(areas: Area[], productos: Producto[]) {
+  return areas
+    .map((a) => ({
+      ...a,
+      productos: productos.filter((p) => estaEnArea(p, a.slug)).length,
+    }))
+    .filter((a) => a.productos > 0);
+}
+
+/**
+ * Repuestos y accesorios que comparten un área con el equipo (p. ej. sensores y brazaletes para
+ * un monitor). Primero los del área principal del equipo.
+ */
+export function repuestosPara(productos: Producto[], p: Producto, cuantos = 3) {
+  const areas = new Set([p.area, ...(p.areas ?? [])].filter(Boolean));
+  const puntos = (r: Producto) =>
+    p.area && estaEnArea(r, p.area)
+      ? 2
+      : [...areas].some((a) => estaEnArea(r, a as string))
+        ? 1
+        : 0;
+  return deFamilia(productos, "repuestos")
+    .map((r) => ({ r, n: puntos(r) }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n)
+    .slice(0, cuantos)
+    .map((x) => x.r);
+}
+
 export type Filtros = { area?: string; marca?: string; q?: string };
 
 /** Productos que pasan los filtros del catálogo (área, marca y texto, sin tildes). */
