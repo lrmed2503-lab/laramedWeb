@@ -8,10 +8,14 @@ import { claseBoton, IconoWhatsapp, TarjetaProducto } from "@/components/ui";
 import { obtenerCatalogoCompleto } from "@/lib/catalogo";
 import {
   AREA_VETERINARIA,
+  deFamilia,
   descripcionProducto,
   enlaceWhatsapp,
   etiquetaProducto,
+  FAMILIAS,
+  familiaDe,
   relacionados,
+  repuestosPara,
   separarVeterinaria,
   urlImagen,
 } from "@/lib/catalogo-base";
@@ -60,11 +64,19 @@ export default async function ProductoPagina({ params }: { params: Params }) {
   // Un equipo veterinario se relaciona solo con otros veterinarios y su ruta pasa por /veterinaria.
   const vet = p.area === AREA_VETERINARIA;
   const { medico, veterinarios } = separarVeterinaria(c);
+  const familia = familiaDe(p);
   const seccion = vet
     ? { nombre: "Veterinaria", href: "/veterinaria" }
-    : { nombre: "Productos", href: "/productos" };
+    : { nombre: FAMILIAS[familia].nombre, href: FAMILIAS[familia].ruta };
   const area = vet ? undefined : c.areas.find((a) => a.slug === p.area);
-  const otros = relacionados(vet ? veterinarios : medico.productos, p, 3);
+  // Relacionados de la misma familia (un equipo con equipos, un repuesto con repuestos).
+  const otros = relacionados(
+    vet ? veterinarios : deFamilia(medico.productos, familia),
+    p,
+    3,
+  );
+  const repuestos =
+    !vet && familia === "equipos" ? repuestosPara(medico.productos, p, 4) : [];
   const nombreArea = new Map(c.areas.map((a) => [a.slug, a.nombre]));
   const usoEn = medico.areas.filter((a) => (p.areas ?? []).includes(a.slug));
   const etiqueta = etiquetaProducto(p);
@@ -78,7 +90,7 @@ export default async function ProductoPagina({ params }: { params: Params }) {
         ? [
             {
               name: area.nombre,
-              item: `${sitioUrl()}/productos?area=${area.slug}`,
+              item: `${sitioUrl()}${seccion.href}?area=${area.slug}`,
             },
           ]
         : []),
@@ -107,7 +119,9 @@ export default async function ProductoPagina({ params }: { params: Params }) {
           {area && (
             <>
               {" / "}
-              <Link href={`/productos?area=${area.slug}`}>{area.nombre}</Link>
+              <Link href={`${seccion.href}?area=${area.slug}`}>
+                {area.nombre}
+              </Link>
             </>
           )}{" "}
           / {p.titulo}
@@ -149,7 +163,7 @@ export default async function ProductoPagina({ params }: { params: Params }) {
                 {usoEn.map((a) => (
                   <Link
                     key={a.slug}
-                    href={`/productos?area=${a.slug}`}
+                    href={`${seccion.href}?area=${a.slug}`}
                     className="rounded-full border border-linea px-3 py-1 text-tinta no-underline hover:border-azul hover:text-azul"
                   >
                     {a.nombre}
@@ -221,6 +235,30 @@ export default async function ProductoPagina({ params }: { params: Params }) {
           </div>
         </div>
       </section>
+
+      {repuestos.length > 0 && (
+        <section
+          className={`mx-auto max-w-[1240px] px-4 pt-14 sm:px-6 ${otros.length ? "" : "pb-24"}`}
+        >
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+            <h2 className="m-0 font-titulo text-[26px] font-semibold text-noche">
+              Repuestos y accesorios
+              {area ? ` de ${area.nombre.toLowerCase()}` : ""}
+            </h2>
+            <Link
+              href={`${FAMILIAS.repuestos.ruta}${area ? `?area=${area.slug}` : ""}`}
+              className={claseBoton("borde", true)}
+            >
+              Ver todos
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {repuestos.map((r) => (
+              <TarjetaProducto key={r.slug} p={r} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {otros.length > 0 && (
         <section className="mx-auto max-w-[1240px] px-4 pt-14 pb-24 sm:px-6">

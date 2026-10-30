@@ -6,6 +6,7 @@ import {
   Wrench,
 } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { FormularioSolicitud } from "@/components/formulario-solicitud";
 import { BarraMovil } from "@/components/pie";
 import {
@@ -15,9 +16,9 @@ import {
   Pasos,
   Preguntas,
 } from "@/components/secciones";
-import { Antetitulo, claseBoton } from "@/components/ui";
+import { Antetitulo, claseBoton, TarjetaProducto } from "@/components/ui";
 import { obtenerCatalogo } from "@/lib/catalogo";
-import { CATALOGO_VACIO } from "@/lib/catalogo-base";
+import { CATALOGO_VACIO, deFamilia, FAMILIAS } from "@/lib/catalogo-base";
 
 export const dynamic = "force-dynamic";
 
@@ -128,7 +129,13 @@ const PREGUNTAS = [
 ] as const;
 
 export default async function ServicioTecnico() {
-  const { empresa } = await obtenerCatalogo().catch(() => CATALOGO_VACIO);
+  const c = await obtenerCatalogo().catch(() => CATALOGO_VACIO);
+  const { empresa } = c;
+  const repuestos = deFamilia(c.productos, "repuestos");
+  const muestra = [
+    ...repuestos.filter((p) => p.fotos.length),
+    ...repuestos.filter((p) => !p.fotos.length),
+  ].slice(0, 3);
   return (
     <>
       <Cabecera
@@ -202,6 +209,34 @@ export default async function ServicioTecnico() {
           ))}
         </div>
       </section>
+
+      {repuestos.length > 0 && (
+        <section className="mx-auto max-w-[1240px] px-4 pt-6 pb-14 sm:px-6">
+          <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+            <div className="flex max-w-[720px] flex-col gap-2.5">
+              <Antetitulo>Repuestos y accesorios</Antetitulo>
+              <h2 className="m-0 font-titulo text-[28px] font-semibold text-noche sm:text-4xl">
+                ¿Necesita un repuesto o accesorio?
+              </h2>
+              <p className="m-0 text-[17px] leading-relaxed text-niebla">
+                Cables, sensores, brazaletes y repuestos para sus equipos. Los
+                vendemos por separado o los instalamos en el mantenimiento.
+              </p>
+            </div>
+            <Link
+              href={FAMILIAS.repuestos.ruta}
+              className={claseBoton("bordeAzul")}
+            >
+              Ver repuestos y accesorios
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {muestra.map((p) => (
+              <TarjetaProducto key={p.slug} p={p} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <Pasos titulo="Del aviso al equipo funcionando" pasos={PASOS} />
 

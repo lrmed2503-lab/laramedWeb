@@ -1,18 +1,22 @@
 import { describe, expect, it } from "vitest";
 import {
+  areasConProductos,
   CATALOGO_VACIO,
+  deFamilia,
   descripcionProducto,
   destacados,
   enlaceMapa,
   enlaceWhatsapp,
   estaEnArea,
   etiquetaProducto,
+  familiaDe,
   filtrarProductos,
   fotoDeArea,
   marcasDeProductos,
   oficinasDeEmpresa,
   type Producto,
   relacionados,
+  repuestosPara,
   separarVeterinaria,
   srcsetImagen,
   urlImagen,
@@ -209,5 +213,67 @@ describe("veterinaria", () => {
     });
     expect(medico.productos).toHaveLength(1);
     expect(veterinarios).toEqual([]);
+  });
+});
+
+describe("familias", () => {
+  const equipo = p({
+    slug: "monitor",
+    codigo: "EQ-00010",
+    area: "monitoreo",
+    areas: ["monitoreo", "cuidados-intensivos"],
+  });
+  const papel = p({
+    slug: "papel",
+    codigo: "CON-00001",
+    area: "impresion",
+    areas: ["impresion", "diagnostico"],
+  });
+  const sensor = p({ slug: "sensor", codigo: "REP-00086", area: "monitoreo" });
+  const celda = p({
+    slug: "celda",
+    codigo: "REP-00089",
+    area: "cuidados-intensivos",
+  });
+  const cable = p({ slug: "cable", codigo: "REP-00004", area: "diagnostico" });
+  const lista = [equipo, papel, sensor, celda, cable];
+
+  it("la familia sale del prefijo del código", () => {
+    expect(familiaDe(equipo)).toBe("equipos");
+    expect(familiaDe(papel)).toBe("insumos");
+    expect(familiaDe(sensor)).toBe("repuestos");
+    expect(familiaDe({ codigo: "rep-00001" })).toBe("repuestos");
+    expect(familiaDe({ codigo: "SER-00001" })).toBe("equipos");
+    expect(deFamilia(lista, "repuestos").map((x) => x.slug)).toEqual([
+      "sensor",
+      "celda",
+      "cable",
+    ]);
+  });
+
+  it("cada familia muestra solo las áreas donde tiene productos", () => {
+    const areas = [
+      { slug: "monitoreo", nombre: "Monitoreo", productos: 9 },
+      { slug: "impresion", nombre: "Impresión médica", productos: 9 },
+      { slug: "diagnostico", nombre: "Diagnóstico", productos: 9 },
+    ];
+    expect(areasConProductos(areas, deFamilia(lista, "insumos"))).toEqual([
+      { slug: "impresion", nombre: "Impresión médica", productos: 1 },
+      { slug: "diagnostico", nombre: "Diagnóstico", productos: 1 },
+    ]);
+    expect(
+      areasConProductos(areas, deFamilia(lista, "equipos")).map((a) => a.slug),
+    ).toEqual(["monitoreo"]);
+  });
+
+  it("repuestos del equipo: primero los de su área principal", () => {
+    expect(repuestosPara(lista, equipo).map((x) => x.slug)).toEqual([
+      "sensor",
+      "celda",
+    ]);
+    expect(repuestosPara(lista, equipo, 1).map((x) => x.slug)).toEqual([
+      "sensor",
+    ]);
+    expect(repuestosPara(lista, p({ slug: "x", area: null }))).toEqual([]);
   });
 });
